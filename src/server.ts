@@ -2,14 +2,19 @@ import 'dotenv/config';
 import express, { Request, Response } from 'express';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { sql } from 'drizzle-orm';
+import techniquesRouter from './routes/techniques';
 
 const db = drizzle(process.env.DATABASE_URL!);
 const app = express();
 const port = 3000;
 
+app.use(express.json());
+
 app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to Mnemo API!');
 });
+
+app.use('/api/techniques', techniquesRouter);
 
 app.get('/test-db', async (req: Request, res: Response) => {
   try {
