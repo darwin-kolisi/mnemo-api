@@ -6,11 +6,13 @@ import techniquesRouter from './routes/techniques';
 import resourcesRouter from './routes/resources';
 import useCasesRouter from './routes/useCases';
 import effectivenessStatsRouter from './routes/effectivenessStats';
+import { logger } from './middleware/logger';
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
+app.use(logger);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to Mnemo API!');
