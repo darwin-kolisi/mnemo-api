@@ -6,13 +6,18 @@ import {
   updateTechnique,
   deleteTechnique,
 } from '../controllers/technique';
+import { validate } from '../middleware/validate';
+import {
+  createTechniqueSchema,
+  updateTechniqueSchema,
+} from '../validators/techniqueValidator';
 
 const router = Router();
 
 router.get('/', getTechniques);
-router.post('/', createTechnique);
+router.post('/', validate(createTechniqueSchema), createTechnique);
 router.get('/:id', getTechniqueById);
-router.put('/:id', updateTechnique);
+router.put('/:id', validate(updateTechniqueSchema), updateTechnique);
 router.delete('/:id', deleteTechnique);
 
 export default router;
