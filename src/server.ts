@@ -7,6 +7,7 @@ import resourcesRouter from './routes/resources';
 import useCasesRouter from './routes/useCases';
 import effectivenessStatsRouter from './routes/effectivenessStats';
 import { logger } from './middleware/logger';
+import { errorHandler } from './middleware/errorHandler';
 
 const app = express();
 const port = 3000;
@@ -40,6 +41,8 @@ app.get('/test-db', async (req: Request, res: Response) => {
     });
   }
 });
+
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
