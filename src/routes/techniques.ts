@@ -5,7 +5,7 @@ import {
   getTechniqueById,
   updateTechnique,
   deleteTechnique,
-} from '../controllers/techniqueController';
+} from '../controllers/technique';
 
 const router = Router();
 

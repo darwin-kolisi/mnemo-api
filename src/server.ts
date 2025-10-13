@@ -1,10 +1,10 @@
 import 'dotenv/config';
 import express, { Request, Response } from 'express';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { db } from './db';
 import { sql } from 'drizzle-orm';
 import techniquesRouter from './routes/techniques';
+import resourcesRouter from './routes/resources';
 
-const db = drizzle(process.env.DATABASE_URL!);
 const app = express();
 const port = 3000;
 
@@ -15,6 +15,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/techniques', techniquesRouter);
+app.use('/api/resources', resourcesRouter);
 
 app.get('/test-db', async (req: Request, res: Response) => {
   try {
@@ -22,7 +23,7 @@ app.get('/test-db', async (req: Request, res: Response) => {
     res.json({
       success: true,
       message: 'Database connection is working!',
-      data: result.rows,
+      data: result,
     });
   } catch (error) {
     console.error('Database connection failed:', error);
