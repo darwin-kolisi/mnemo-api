@@ -1,15 +1,25 @@
 import 'dotenv/config';
 import express, { Request, Response } from 'express';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { db } from './db';
 import { sql } from 'drizzle-orm';
+import techniquesRouter from './routes/techniques';
+import resourcesRouter from './routes/resources';
+import useCasesRouter from './routes/useCases';
+import effectivenessStatsRouter from './routes/effectivenessStats';
 
-const db = drizzle(process.env.DATABASE_URL!);
 const app = express();
 const port = 3000;
+
+app.use(express.json());
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to Mnemo API!');
 });
+
+app.use('/api/techniques', techniquesRouter);
+app.use('/api/resources', resourcesRouter);
+app.use('/api/use-cases', useCasesRouter);
+app.use('/api/effectiveness-stats', effectivenessStatsRouter);
 
 app.get('/test-db', async (req: Request, res: Response) => {
   try {
@@ -17,7 +27,7 @@ app.get('/test-db', async (req: Request, res: Response) => {
     res.json({
       success: true,
       message: 'Database connection is working!',
-      data: result.rows,
+      data: result,
     });
   } catch (error) {
     console.error('Database connection failed:', error);
