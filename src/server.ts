@@ -4,6 +4,7 @@ import { db } from './db';
 import { sql } from 'drizzle-orm';
 import techniquesRouter from './routes/techniques';
 import resourcesRouter from './routes/resources';
+import useCasesRouter from './routes/useCases';
 
 const app = express();
 const port = 3000;
@@ -16,6 +17,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/api/techniques', techniquesRouter);
 app.use('/api/resources', resourcesRouter);
+app.use('/api/useCases', useCasesRouter);
 
 app.get('/test-db', async (req: Request, res: Response) => {
   try {
