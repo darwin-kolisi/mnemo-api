@@ -5,7 +5,21 @@ import { eq } from 'drizzle-orm';
 
 export const getEffectivenessStats = async (req: Request, res: Response) => {
   try {
-    const stats = await db.select().from(effectivenessStats);
+    const { condition, techniqueId } = req.query;
+
+    let query: any = db.select().from(effectivenessStats);
+
+    if (condition && typeof condition === 'string') {
+      query = query.where(eq(effectivenessStats.condition, condition));
+    }
+
+    if (techniqueId) {
+      query = query.where(
+        eq(effectivenessStats.techniqueId, parseInt(techniqueId as string))
+      );
+    }
+
+    const stats = await query;
     res.json(stats);
   } catch (err) {
     console.error(err);
@@ -24,7 +38,10 @@ export const getEffectivenessStatsByTechniqueId = async (
       .from(effectivenessStats)
       .where(eq(effectivenessStats.id, Number(id)));
 
-    if (!stat) return res.status(404).json({ error: 'No stat found for this technique' });
+    if (!stat)
+      return res
+        .status(404)
+        .json({ error: 'No stat found for this technique' });
 
     res.json(stat);
   } catch (err) {
