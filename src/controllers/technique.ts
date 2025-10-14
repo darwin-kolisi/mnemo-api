@@ -1,12 +1,33 @@
 import { Request, Response } from 'express';
 import { db } from '../db';
-import { eq } from 'drizzle-orm';
+import { eq, ilike, or } from 'drizzle-orm';
 import { techniques } from '../db/schema';
 
 export async function getTechniques(req: Request, res: Response) {
   try {
-    const allTechniques = await db.select().from(techniques);
-    res.json(allTechniques);
+    const { category, search, page = '1', limit = '10' } = req.query;
+
+    let query: any = db.select().from(techniques);
+
+    if (category && typeof category === 'string') {
+      query = query.where(eq(techniques.category, category));
+    }
+
+    if (search && typeof search === 'string') {
+      query = query.where(
+        or(
+          ilike(techniques.name, `%${search}%`),
+          ilike(techniques.shortDescription, `%${search}%`)
+        )
+      );
+    }
+
+    const pageNum = parseInt(page as string);
+    const limitNum = parseInt(limit as string);
+    const offset = (pageNum - 1) * limitNum;
+    const results = await query.limit(limitNum).offset(offset);
+
+    res.json(results);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch techniques' });
   }
