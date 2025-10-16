@@ -56,16 +56,21 @@ export async function createTechnique(req: Request, res: Response) {
 export async function getTechniqueById(req: Request, res: Response) {
   try {
     const id = parseInt(req.params.id);
-    const technique = await db
-      .select()
-      .from(techniques)
-      .where(eq(techniques.id, id));
 
-    if (technique.length === 0) {
+    const technique = await db.query.techniques.findFirst({
+      where: eq(techniques.id, id),
+      with: {
+        effectivenessStats: true,
+        useCases: true,
+        resources: true,
+      },
+    });
+
+    if (!technique) {
       return res.status(404).json({ error: 'Technique not found' });
     }
 
-    res.json(technique[0]);
+    res.json(technique);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch technique' });
   }
